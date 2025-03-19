@@ -1,0 +1,8 @@
+{
+  "target": "ES2017",
+  "strict": true,
+
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
+}

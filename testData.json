@@ -1,0 +1,30 @@
+[
+  {
+    "city": "Mikkeli",
+    "lat": "60",
+    "lon": "20",
+    "temp": "2",
+    "humidity": "3"
+  },
+  {
+    "city": "Kuopijo",
+    "lat": "40",
+    "lon": "40",
+    "temp": "3",
+    "humidity": "6"
+  },
+  {
+    "city": "Saimaa",
+    "lat": "20",
+    "lon": "20",
+    "temp": "50",
+    "humidity": "52"
+  },
+  {
+    "city": "Murvelswille",
+    "lat": "41",
+    "lon": "61",
+    "temp": "0",
+    "humidity": "100"
+  }
+]
