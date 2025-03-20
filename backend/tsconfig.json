@@ -3,6 +3,9 @@
   "strict": true,
 
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true
   }
 }

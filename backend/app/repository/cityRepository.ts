@@ -1,67 +1,84 @@
-import pg from "pg";
 import { CityData } from "../types/CityData";
-const DB_CONNECTION_STRING =
-  "postgresql://postgres:admin@localhost:5432/vaisala";
-const client = new pg.Client(DB_CONNECTION_STRING);
+import sequelize, { TempData } from "../../db-init/Models";
 
-export default async function createRepository() {
-  await client.connect();
-  return {
-    upsertCities: async (cities: CityData[]) => {
-      const valueStatements = cities.map(
-        (_, index) =>
-          `($${4 * index + 1},$${4 * index + 2},$${4 * index + 3},$${4 * index + 4})`
+const repository = {
+  upsertCities: async (cities: CityData[]) => {
+    const queries = cities.map(async ({ city, lat, lon, temp, humidity }) => {
+      const created = await TempData.findOrCreate({
+        where: { city },
+        defaults: {
+          city,
+          temp,
+          humidity,
+          location: { type: "Point", coordinates: [lon, lat] },
+        },
+      });
+
+      if (created[1]) return { rowsCreated: 1 };
+      await TempData.update(
+        {
+          values: {
+            temp,
+            humidity,
+            location: { type: "Point", coordinates: [lon, lat] },
+          },
+        },
+        {
+          where: {
+            city,
+          },
+        }
       );
-      const values = cities
-        .map((city) => ({
-          city: city.city,
-          location: `SRID=4326;POINT(${city.lon} ${city.lat})`,
-          temp: city.temp,
-          humidity: city.humidity,
-        }))
-        .map((city) => Object.values(city))
-        .flat();
+      return { rowsUpdated: 1 };
+    });
 
-      const result = await client.query(
-        `INSERT INTO temp_data (city, location, temp, humidity)
-                VALUES ${valueStatements.reduce((all, one) => {
-                  if (all.length) {
-                    return all + ", " + one;
-                  }
-                  return one;
-                }, "")}
-                ON CONFLICT (city)
-                DO UPDATE SET location = EXCLUDED.location, 
-                temp = EXCLUDED.temp, 
-                humidity = EXCLUDED.humidity
-                `,
-        values
-      );
+    const responses = await Promise.all(queries);
 
-      return result.rowCount;
-    },
-    getNearestCity: async ({
-      longitude,
-      latitude,
-    }: {
-      longitude: number;
-      latitude: number;
-    }): Promise<CityData> => {
-      const q = `SELECT city, location, temp, humidity, $1 <--> location as dist FROM temp_data
-        ORDER BY dist
-        limit 1
-            `;
-      console.log(q);
-      const result = await client.query(
-        `SELECT city, location, temp, humidity, $1 <-> location as dist FROM temp_data
-        ORDER BY dist
-        limit 1
-            `,
-        [`SRID=4326;POINT(${longitude} ${latitude})`]
-      );
-      return result.rows[0];
-    },
+    return responses.reduce(
+      (responseObject, singleResult) => {
+        return {
+          rowsCreated:
+            responseObject.rowsCreated + (singleResult.rowsCreated ?? 0),
+          rowsUpdated:
+            responseObject.rowsUpdated + (singleResult.rowsUpdated ?? 0),
+        };
+      },
+      { rowsCreated: 0, rowsUpdated: 0 }
+    );
+  },
+  getNearestCity: async ({
+    longitude,
+    latitude,
+  }: {
+    longitude: number;
+    latitude: number;
+  }): Promise<CityData | null> => {
+    const result = await TempData.findOne({
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              // Use literal to gain access to psql <-> operator which is the most efficient way to find nearest neighbor
+              `"location" <-> 'SRID=4326;POINT(${longitude} ${latitude})'`
+            ),
+            "diff",
+          ],
+        ],
+      },
+      order: ["diff"],
+    });
 
-    close: () => client.end(),
-  };
-}
+    return result?.dataValues
+      ? {
+          city: result.dataValues.city,
+          lon: result.dataValues.location.coordinates[0],
+          lat: result.dataValues.location.coordinates[1],
+          temp: result.dataValues.temp,
+          humidity: result.dataValues.humidity,
+        }
+      : null;
+  },
+};
+
+export type CityRepository = typeof repository;
+export default repository;

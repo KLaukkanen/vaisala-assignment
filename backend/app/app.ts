@@ -1,42 +1,51 @@
 import express from "express";
-import bodyParser from "body-parser";
+import * as OpenApiValidator from "express-openapi-validator";
+import swaggerUI from "swagger-ui-express";
 
-import cityRepository from "./repository/cityRepository";
+import cityRepository, { CityRepository } from "./repository/cityRepository";
 import services from "./services";
+import city from "./routes/city";
+import swaggerSpec from "./swagger/weatherApi.json";
+import path from "path";
+import type { NextFunction, Request, Response } from "express";
 
-export default async function startApp(mockRepository) {
+export default function createApp(mockRepository?: CityRepository) {
   const app = express();
-  const port = process.env.PORT;
 
-  const repository = mockRepository || (await cityRepository());
+  const repository = mockRepository || cityRepository;
   const service = services(repository);
 
-  app.use(bodyParser.json());
+  app.use(express.json());
 
-  app.get("/city", async (req, res) => {
-    const { lon, lat } = req.query;
-    const city = await service.getNearestCity({
-      longitude: lon,
-      latitude: lat,
-    });
-
-    res.send(city);
+  app.use((req, res, next) => {
+    res.set("Content-Type", "Application/json");
+    next();
   });
-  app.post("/city", async (req, res) => {
-    console.log(req.body);
-    const rowsAdded = await service.validateAndAddCities(req.body);
-    res.status(200).send(`Rows added: ${rowsAdded}`).end();
+  app.use(
+    OpenApiValidator.middleware({
+      apiSpec: path.join(__dirname, "./swagger/weatherApi.json"),
+      validateRequests: {
+        coerceTypes: true,
+      },
+      validateResponses: true,
+    })
+  );
+
+  app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+  app.use("/city", city(service));
+
+  // All four parameters need to be entered for error handler to work
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    if ("status" in err && typeof err.status === "number" && "errors" in err) {
+      res
+        .status(err.status)
+        .json({ message: err.message, errors: err.errors })
+        .end();
+    } else {
+      res.status(500).end();
+    }
   });
 
-  const server = app.listen(port);
-
-  console.log("Listening at port " + port);
-
-  return {
-    app,
-    shutdown: () => {
-      server.close();
-      repository?.close();
-    },
-  };
+  return app;
 }

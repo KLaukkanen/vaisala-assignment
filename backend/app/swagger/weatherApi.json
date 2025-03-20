@@ -1,0 +1,204 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Weather UI- OpenAPI 3.0",
+    "description": "Stores and provides weather data",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "city",
+      "description": "Weather information for a single city"
+    }
+  ],
+  "paths": {
+    "/city": {
+      "get": {
+        "tags": ["city"],
+        "summary": "Find city and weather information closest to the coordinates",
+        "description": "Find the city closest to the coordinates and return weather information",
+        "operationId": "findCity",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "description": "Latitude of the queried location",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Latitude"
+            }
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "description": "Longitude of the queried location",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Longitude"
+            }
+          },
+          {
+            "name": "tempUnit",
+            "in": "query",
+            "description": "Optionally set the temperature unit for the whole data",
+            "schema": {
+              "type": "string",
+              "enum": ["K", "F", "C"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/City"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Parameters"
+          },
+          "404": {
+            "description": "No cities in database"
+          },
+          "default": {
+            "description": "Unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["city"],
+        "summary": "Add cities to the database, or update existing data",
+        "description": "Adds multiple cities to the database. If they already exist, update existing entries.",
+        "operationId": "addCities",
+        "parameters": [
+          {
+            "name": "tempUnit",
+            "in": "query",
+            "description": "Optionally set the temperature unit for the whole data",
+            "schema": {
+              "type": "string",
+              "enum": ["K", "F", "C"]
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Cities with their weather data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cities"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation, no new rows added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitiesResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Successful operation, new rows added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitiesResponseAdded"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "default": {
+            "description": "Unexpected error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "City": {
+        "type": "object",
+        "required": ["city", "temp", "humidity", "lat", "lon"],
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "Helsinki"
+          },
+          "temp": {
+            "type": "number",
+            "example": 20.0
+          },
+          "humidity": {
+            "type": "number",
+            "example": 50
+          },
+          "lat": {
+            "$ref": "#/components/schemas/Latitude"
+          },
+          "lon": {
+            "$ref": "#/components/schemas/Longitude"
+          }
+        }
+      },
+      "Cities": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/City"
+        }
+      },
+      "Latitude": {
+        "type": "number",
+        "format": "double",
+        "minimum": -90,
+        "maximum": 90
+      },
+      "Longitude": {
+        "type": "number",
+        "format": "double",
+        "minimum": -180,
+        "maximum": 180
+      },
+      "CitiesResponse": {
+        "type": "object",
+        "required": ["rowsCreated", "rowsUpdated"],
+        "properties": {
+          "rowsCreated": {
+            "type": "integer",
+            "example": 0
+          },
+          "rowsUpdated": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "CitiesResponseAdded": {
+        "type": "object",
+        "required": ["rowsCreated", "rowsUpdated"],
+        "properties": {
+          "rowsCreated": {
+            "type": "integer",
+            "example": 2
+          },
+          "rowsUpdated": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      }
+    }
+  }
+}

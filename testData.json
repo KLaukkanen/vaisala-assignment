@@ -1,30 +1,72 @@
 [
   {
     "city": "Mikkeli",
-    "lat": "60",
-    "lon": "20",
+    "lat": "61.65580",
+    "lon": "27.29518",
     "temp": "2",
     "humidity": "3"
   },
   {
-    "city": "Kuopijo",
-    "lat": "40",
-    "lon": "40",
+    "city": "Kuopio",
+    "lat": "62.89801",
+    "lon": "27.65300",
     "temp": "3",
     "humidity": "6"
   },
   {
-    "city": "Saimaa",
-    "lat": "20",
-    "lon": "20",
+    "city": "Jyväskylä",
+    "lat": "62.24797",
+    "lon": "25.76140",
     "temp": "50",
     "humidity": "52"
   },
   {
-    "city": "Murvelswille",
-    "lat": "41",
-    "lon": "61",
+    "city": "Närpiö",
+    "lat": "62.46824",
+    "lon": "21.33247",
+    "temp": "0",
+    "humidity": "101"
+  },
+  {
+    "city": "Tampere",
+    "lat": "61.48414",
+    "lon": "23.77268",
     "temp": "0",
     "humidity": "100"
+  },
+  {
+    "city": "Vantaa",
+    "lat": "60.28837",
+    "lon": "24.99763",
+    "temp": "0",
+    "humidity": "100"
+  },
+  {
+    "city": "Hämeenlinna",
+    "lat": "60.97712",
+    "lon": "24.48138",
+    "temp": "24",
+    "humidity": "80"
+  },
+  {
+    "city": "Vaasa",
+    "lat": "63.08188",
+    "lon": "21.71790",
+    "temp": "25",
+    "humidity": "70"
+  },
+  {
+    "city": "Oulu",
+    "lat": "65.03443",
+    "lon": "25.52613",
+    "temp": "24",
+    "humidity": "80"
+  },
+  {
+    "city": "Rovaniemi",
+    "lat": "66.51998",
+    "lon": "25.72704",
+    "temp": "13",
+    "humidity": "13"
   }
 ]
