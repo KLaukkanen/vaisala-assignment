@@ -15,8 +15,9 @@ const createCityRouter = (service: Service) => {
         },
         (tempUnit || "C") as TemperatureUnit // Openapi validates query
       );
-
-      res.json(city);
+      if (!city) {
+        res.status(404).end();
+      } else res.json(city);
     } catch (err) {
       next(err);
     }

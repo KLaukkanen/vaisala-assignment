@@ -1,11 +1,13 @@
 {
   "target": "ES2017",
   "strict": true,
+  "include": ["app/*"],
 
   "compilerOptions": {
     "esModuleInterop": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "build"
   }
 }

@@ -1,7 +1,7 @@
 import { DataTypes, Sequelize } from "sequelize";
 
-const url = `postgresql://postgres:admin@localhost:${process.env.DB_PORT}/vaisala`;
-
+const url = `postgresql://postgres:admin@${process.env.DB_HOST}:${process.env.DB_PORT}/vaisala`;
+console.log(url);
 const sequelize = new Sequelize(url, { logging: false });
 
 export const TempData = sequelize.define(

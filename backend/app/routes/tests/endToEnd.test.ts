@@ -17,6 +17,7 @@ let server: ReturnType<typeof app.listen>;
 describe("API tests", () => {
   beforeAll(async () => {
     server = app.listen(PORT);
+    await sequelize.sync();
   });
 
   it("returns nearest city", async () => {

@@ -5,10 +5,13 @@
   "main": "app/index.ts",
   "scripts": {
     "dev": "set DB_PORT=5432&& ts-node-dev app/index.ts",
-    "pretest": "set DB_PORT=5433&&docker compose -f test-environment.yml up -d && ts-node-dev db-init/sequelize.ts",
-    "test": "set DB_PORT=5433&& jest",
-    "posttest": "docker compose -f test-environment.yml down",
-    "init-db": "ts-node-dev db-init/sequelize.ts"
+    "test": "jest",
+    "init-db": "ts-node-dev db-init/sequelize.ts",
+    "build": "tsc",
+    "start": "node build/app/index.js",
+    "start-or-test": "$TEST && npm run true || npm run false",
+    "true": "echo true",
+    "false": "echo false"
   },
   "author": "KL",
   "license": "ISC",
