@@ -17,7 +17,7 @@ Rest API for storing temperature and humidity data for cities. Provides lookup b
 
 # deploy
 
-`docker compose -f compose/deploy.yml up`  
+`docker compose --project-directory . -f compose/deploy.yml up --build`  
 or  
 `./scripts/deploy.sh`
 
@@ -25,7 +25,7 @@ Launches database and built backend app in separate containers. Database not exp
 
 # test
 
-`docker compose -f compose/test.yml --build --exit-on-container-exit up`  
+`docker compose --project-directory . -f compose/test.yml up --build --abort-on-container-exit`  
 or  
 `./scripts/test.sh`
 
@@ -33,7 +33,7 @@ Runs all the tests in containerized environment and provides a coverage report.
 
 # Dev start
 
-`docker compose -f compose/dev.yml up --watch`  
+`docker compose --project-directory . -f compose/dev.yml up --build --watch`  
 or  
 `./scripts/dev.sh`
 
