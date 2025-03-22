@@ -2,6 +2,10 @@
 
 Rest API for storing temperature and humidity data for cities. Provides lookup based on latitude and longitude coordinates. Full API specification available at http://localhost:3000/api-docs when deployed.
 
+# Run requirements
+
+- Docker. While API can also be run with npm, repository contains scripts to run development environment, tests and built deploy on docker containers.
+
 # Frameworks
 
 - Express
