@@ -1,0 +1,1 @@
+docker compose --project-directory . -f compose/test.yml up --build --abort-on-container-exit

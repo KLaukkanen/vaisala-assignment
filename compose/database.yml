@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    restart: always
+    shm_size: 128mb
+    networks:
+      - net
+    healthcheck:
+      test: pg_isready -q -d vaisala -U postgres
+      interval: 5s
+      timeout: 60s
+      retries: 5
+      start_period: 5s
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: vaisala
+networks:
+  net:
+    driver: bridge

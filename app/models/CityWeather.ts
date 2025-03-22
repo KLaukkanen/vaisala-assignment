@@ -1,11 +1,10 @@
 import { DataTypes, Sequelize } from "sequelize";
 
 const url = `postgresql://postgres:admin@${process.env.DB_HOST}:${process.env.DB_PORT}/vaisala`;
-console.log(url);
 const sequelize = new Sequelize(url, { logging: false });
 
 export const TempData = sequelize.define(
-  "temp_data",
+  "city_weather",
   {
     city: { type: DataTypes.STRING, primaryKey: true },
     location: DataTypes.GEOGRAPHY,
@@ -14,7 +13,7 @@ export const TempData = sequelize.define(
   },
   {
     indexes: [
-      { name: "temp_data_location_i", using: "GIST", fields: ["location"] },
+      { name: "city_weather_location_i", using: "GIST", fields: ["location"] },
     ],
     timestamps: false,
   }

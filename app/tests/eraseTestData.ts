@@ -1,4 +1,4 @@
-import { TempData } from "../db-init/Models";
+import { TempData } from "../models/CityWeather";
 
 const eraseTestData = async () => {
   await TempData.truncate();

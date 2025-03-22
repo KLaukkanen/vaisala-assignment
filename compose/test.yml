@@ -1,0 +1,20 @@
+services:
+  db:
+    extends:
+      file: compose/database.yml
+      service: db
+  backend:
+    build:
+      dockerfile: ./Dockerfile
+    command: "npm test"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - net
+networks:
+  net:
+    driver: bridge

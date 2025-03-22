@@ -1,0 +1,1 @@
+curl "localhost:3000/city?lon=20&lat=20&tempUnit=K"

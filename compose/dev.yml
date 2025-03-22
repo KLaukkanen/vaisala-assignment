@@ -1,0 +1,33 @@
+services:
+  db:
+    extends:
+      file: compose/database.yml
+      service: db
+    ports:
+      - 5500:5432
+  backend:
+    build:
+      dockerfile: ./Dockerfile
+    networks:
+      - net
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 3000:3000
+    command: "npm run dev"
+    develop:
+      watch:
+        - action: sync
+          path: ../app
+          target: /usr/app/app
+          ignore:
+            - node_modules/
+
+    environment:
+      DB_PORT: 5432
+      DB_HOST: db
+
+networks:
+  net:
+    driver: bridge

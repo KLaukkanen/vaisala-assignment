@@ -1,0 +1,1 @@
+curl -X POST -H "Content-Type:Application/JSON" localhost:3000/city -T testData.json

@@ -1,5 +1,5 @@
-import { CityData } from "../app/types/CityData";
-import { TempData } from "../db-init/Models";
+import { CityData } from "../types/CityData";
+import { TempData } from "../models/CityWeather";
 
 const createTestData = async (cities: CityData[]) => {
   await Promise.all(

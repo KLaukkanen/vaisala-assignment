@@ -13,5 +13,5 @@ export const DBEntries = [
     temp: 40,
     humidity: 50,
   },
-  { city: "Murvelswille", lat: 20, lon: 60, temp: 40, humidity: 50 },
+  { city: "Helsinki", lat: 20, lon: 60, temp: 40, humidity: 50 },
 ];

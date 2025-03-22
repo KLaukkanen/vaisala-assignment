@@ -1,0 +1,1 @@
+docker compose --project-directory . -f compose/dev.yml up --build --watch
