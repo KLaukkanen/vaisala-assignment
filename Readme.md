@@ -9,6 +9,7 @@ Rest API for storing temperature and humidity data for cities. Provides lookup b
 - Docker for contained environments
 - TypeScript
 - Jest end-to-end tests
+- Postgresql database with PostGIS spatial data types and indexing
 
 # deploy
 
